@@ -1,17 +1,47 @@
+from pydantic import BaseModel, ValidationError, field_validator
+
+class Task(BaseModel):
+    id: int
+    titulo: str
+    status: str
+
+    @field_validator('titulo')
+    @classmethod
+    def ensure_title_n_empty(cls, value:str) -> str:
+        if value.strip() == '':
+            raise ValueError('Title cannot be empty!')
+        return value
+ 
 def criacao_task():
     id_task = input('Digite o identificador da task: ')
+    
+
+# abc
+    try:
+        id_temp = int(id_task)
+        for task in bd_improvisado:
+            if task['id'] == id_temp:
+                print('ERROR: THIS ID ALREADY EXISTS')
+                return
+    except ValueError:
+        pass 
+
     titulo_task = input('Digite o título da task: ')
     status_task = input('Digite o status da task: ')
 
-    nova_task = {
-        'id': id_task,
-        'titulo': titulo_task,
-        'status': status_task
-    }
-
-    bd_improvisado.append(nova_task)
-
-    print('Task criada com sucesso!')
+    try:
+        nova_task = Task(
+            id=id_task,
+            titulo= titulo_task,
+            status= status_task
+        )
+            
+        bd_improvisado.append(nova_task.model_dump())
+        print('Task was created succesfuly and validated by Pydantic')
+    except ValidationError as e:
+        print('\n')
+        print('Validation error! check the data')
+        print(e)
 
 
 def listando_task():
@@ -23,50 +53,63 @@ def listando_task():
 
 
 def buscando_task():
-    id_busca = input('Digite o ID que você quer buscar: ')
     if len(bd_improvisado) == 0:
         print('Nenhuma task encontrada por favor adicione uma nova')
+        return
 
+    try: 
+        id_busca = int(input('Digite o ID que você quer buscar: '))
+    except ValueError:
+        print('ERROR! the ID needs to be a integer value')
+        return
+    
+    resultado_busca = [task for task in bd_improvisado if task['id'] == id_busca]
+    if len(resultado_busca) > 0:
+        print('ID encontrado, mostrando task: ')
+        print(resultado_busca[0])
     else:
-        resultado_busca = [
-            task for task in bd_improvisado if task['id'] == id_busca]
-        if len(resultado_busca) > 0:
-            print('ID encontrado, mostrando task: ')
-            print(resultado_busca[0])
-        else:
-            print('O ID não foi encontrado, por favor digite um ID válido!')
+        print('O ID não foi encontrado, por favor digite um ID válido!')    
 
 
 def atualizando_task():
-    id_busca = input('Digite o ID que você quer atualizar: ')
     if len(bd_improvisado) == 0:
         print('Nenhuma task encontrada por favor adicione uma nova')
+        return
+    try:
+        id_busca = int(input('Digite o ID que você quer atualizar: '))
+    except ValueError:
+        print('ERROR! the ID needs to be a integer value')
+        return
+
+    resultado_busca = [task for task in bd_improvisado if task['id'] == id_busca] 
+
+    if len(resultado_busca) > 0:
+        print('ID encontrado, atualizando task...\n')
+        status_atualizado = input('Digite o novo status dessa task: ')
+        resultado_busca[0]['status'] = status_atualizado
+        print('Task atualizada com sucesso')
     else:
-        resultado_busca = [
-            task for task in bd_improvisado if task['id'] == id_busca]
-        if len(resultado_busca) > 0:
-            print('ID encontrado, atualizando task...\n')
-            status_atualizado = input(
-                'Digite o novo status dessa task: ')
-            resultado_busca[0]['status'] = status_atualizado
-            print('Task atualizada com sucesso')
-        else:
-            print('O ID não foi encontrado, por favor digite um ID válido!')
+        print('O ID não foi encontrado, por favor digite um ID válido!')
 
 
 def deletando_task():
-    id_busca = input('Digite o ID que você quer Deletar: ')
     if len(bd_improvisado) == 0:
         print('Nenhuma task encontrada por favor adicione uma nova')
+        return
+    try:
+        id_busca = int(input('Digite o ID que você quer Deletar: '))
+    except ValueError:
+        print('ERROR! the ID needs to be a integer value')
+        return
+    resultado_busca = [task for task in bd_improvisado if task['id'] == id_busca]
+
+
+    if len(resultado_busca) > 0:
+        print('ID encontrado, deletando task...\n')
+        bd_improvisado.remove(resultado_busca[0])
+        print('Task deletada com sucesso')
     else:
-        resultado_busca = [
-            task for task in bd_improvisado if task['id'] == id_busca]
-        if len(resultado_busca) > 0:
-            print('ID encontrado, deletando task...\n')
-            bd_improvisado.remove(resultado_busca[0])
-            print('Task deletada com sucesso')
-        else:
-            print('O ID não foi encontrado, por favor digite um ID válido!')
+        print('O ID não foi encontrado, por favor digite um ID válido!')
 
 
 bd_improvisado = []

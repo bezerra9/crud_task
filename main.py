@@ -4,9 +4,9 @@ def criacao_task():
     status_task = input('Digite o status da task: ')
 
     nova_task = {
-        'Id': id_task,
-        'Título': titulo_task,
-        'Status': status_task
+        'id': id_task,
+        'titulo': titulo_task,
+        'status': status_task
     }
 
     bd_improvisado.append(nova_task)
@@ -29,7 +29,7 @@ def buscando_task():
 
     else:
         resultado_busca = [
-            task for task in bd_improvisado if task['Id'] == id_busca]
+            task for task in bd_improvisado if task['id'] == id_busca]
         if len(resultado_busca) > 0:
             print('ID encontrado, mostrando task: ')
             print(resultado_busca[0])
@@ -43,12 +43,12 @@ def atualizando_task():
         print('Nenhuma task encontrada por favor adicione uma nova')
     else:
         resultado_busca = [
-            task for task in bd_improvisado if task['Id'] == id_busca]
+            task for task in bd_improvisado if task['id'] == id_busca]
         if len(resultado_busca) > 0:
             print('ID encontrado, atualizando task...\n')
             status_atualizado = input(
                 'Digite o novo status dessa task: ')
-            resultado_busca[0]['Status'] = status_atualizado
+            resultado_busca[0]['status'] = status_atualizado
             print('Task atualizada com sucesso')
         else:
             print('O ID não foi encontrado, por favor digite um ID válido!')
@@ -60,7 +60,7 @@ def deletando_task():
         print('Nenhuma task encontrada por favor adicione uma nova')
     else:
         resultado_busca = [
-            task for task in bd_improvisado if task['Id'] == id_busca]
+            task for task in bd_improvisado if task['id'] == id_busca]
         if len(resultado_busca) > 0:
             print('ID encontrado, deletando task...\n')
             bd_improvisado.remove(resultado_busca[0])

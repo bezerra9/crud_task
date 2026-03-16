@@ -1,16 +1,5 @@
-from pydantic import BaseModel, ValidationError, field_validator
-
-class Task(BaseModel):
-    id: int
-    titulo: str
-    status: str
-
-    @field_validator('titulo')
-    @classmethod
-    def ensure_title_n_empty(cls, value:str) -> str:
-        if value.strip() == '':
-            raise ValueError('Title cannot be empty!')
-        return value
+from schemas.task import Task
+from pydantic import ValidationError
  
 def criacao_task():
     id_task = input('Digite o identificador da task: ')
